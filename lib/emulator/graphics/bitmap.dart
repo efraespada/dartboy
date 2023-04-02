@@ -1,10 +1,9 @@
 import 'dart:typed_data';
 
 /// Stores bitmap data, only the actual image data.
-class Bitmap
-{
+class Bitmap {
   final int pixelSize;
-  
+
   final int width;
 
   final int height;
@@ -13,42 +12,37 @@ class Bitmap
 
   Bitmap(this.width, this.height, this.data, {this.pixelSize = 4});
 
-  int size()
-  {
+  int size() {
     return (this.width * this.height) * this.pixelSize;
   }
 
-  Bitmap copy()
-  {
-    return Bitmap(this.width, this.height, Uint8List.fromList(this.data), pixelSize: this.pixelSize);
+  Bitmap copy() {
+    return Bitmap(this.width, this.height, Uint8List.fromList(this.data),
+        pixelSize: this.pixelSize);
   }
 }
 
 /// Represents a complete bitmap file, composed of bitmap data and a bitmap header containing metadata.
-class BitmapFile
-{
+class BitmapFile {
   static const int headerSize = 122;
 
-  Uint8List header;
+  late Uint8List header;
   Bitmap image;
 
   /// Get the full length of the bitmap file (header and data).
   ///
-  int length()
-  {
+  int length() {
     return BitmapFile.headerSize + this.image.size();
   }
 
   /// Get the bitmap file byte data
-  Uint8List getFile()
-  {
+  Uint8List getFile() {
     Uint8List data = Uint8List.fromList(this.header);
     data.setRange(BitmapFile.headerSize, this.length(), this.image.data);
     return data;
   }
 
-  BitmapFile(this.image)
-  {
+  BitmapFile(this.image) {
     this.header = new Uint8List(this.length());
 
     // ARGB32 header

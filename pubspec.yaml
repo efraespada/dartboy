@@ -6,15 +6,16 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <=2.15.1"
+  sdk: ">=2.19.0 <=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   wave_generator: ^0.1.0
-  audioplayers: ^0.20.1
-  file_picker: ^4.2.8
-  image: ^3.1.0
+  audioplayers: ^3.0.1
+  file: ^6.1.4
+  file_picker: ^5.2.6
+  image: ^4.0.15
 
 dev_dependencies:
   flutter_test:

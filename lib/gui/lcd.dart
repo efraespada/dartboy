@@ -2,50 +2,38 @@ import 'dart:typed_data' show Float32List;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
+import './main_screen.dart';
 import '../emulator/graphics/ppu.dart';
 import '../utils/color_converter.dart';
-import './main_screen.dart';
 
-class LCDWidget extends StatefulWidget
-{
-  LCDWidget({Key key}) : super(key: key);
+class LCDWidget extends StatefulWidget {
+  LCDWidget({Key? key}) : super(key: key);
 
   @override
-  State<LCDWidget> createState()
-  {
+  State<LCDWidget> createState() {
     return MainScreen.lcdState;
   }
 }
 
-class LCDState extends State<LCDWidget> with SingleTickerProviderStateMixin
-{
+class LCDState extends State<LCDWidget> with SingleTickerProviderStateMixin {
   @override
-  Widget build(BuildContext context)
-  {
-    return new CustomPaint
-    (
-      isComplex: true,
-      willChange: true,
-      painter: new LCDPainter()
-    );
+  Widget build(BuildContext context) {
+    return new CustomPaint(
+        isComplex: true, willChange: true, painter: new LCDPainter());
   }
 }
 
 /// LCD painter is used to copy the LCD data from the gameboy PPU to the screen.
-class LCDPainter extends CustomPainter
-{
+class LCDPainter extends CustomPainter {
   /// Indicates if the LCD is drawing new content
   bool drawing = false;
 
   LCDPainter();
 
   @override
-  void paint(Canvas canvas, Size size)
-  {
-    if(MainScreen.emulator == null || MainScreen.emulator.cpu == null)
-    {
+  void paint(Canvas canvas, Size size) {
+    if (MainScreen.emulator.cpu == null) {
       return;
     }
 
@@ -55,21 +43,26 @@ class LCDPainter extends CustomPainter
     int width = PPU.LCD_WIDTH * scale;
     int height = PPU.LCD_HEIGHT * scale;
 
-    for(int x = 0; x < width; x++)
-    {
-      for(int y = 0; y < height; y++)
-      {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
         Paint color = new Paint();
         color.style = PaintingStyle.stroke;
         color.strokeWidth = 1.0;
 
-        color.color = ColorConverter.toColor(MainScreen.emulator.cpu.ppu.current[(x ~/ scale) + (y ~/ scale) * PPU.LCD_WIDTH]);
+        color.color = ColorConverter.toColor(
+          MainScreen.emulator.cpu!.ppu
+              .current[(x ~/ scale) + (y ~/ scale) * PPU.LCD_WIDTH],
+        );
 
-        List<double> points = new List<double>();
+        List<double> points = [];
         points.add(x.toDouble() - width / 2.0);
         points.add(y.toDouble() + 10);
 
-        canvas.drawRawPoints(PointMode.points, new Float32List.fromList(points), color);
+        canvas.drawRawPoints(
+          PointMode.points,
+          new Float32List.fromList(points),
+          color,
+        );
       }
     }
 
@@ -77,8 +70,7 @@ class LCDPainter extends CustomPainter
   }
 
   @override
-  bool shouldRepaint(LCDPainter oldDelegate)
-  {
+  bool shouldRepaint(LCDPainter oldDelegate) {
     return !this.drawing;
   }
 }
